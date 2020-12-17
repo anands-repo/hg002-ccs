@@ -5,6 +5,7 @@ GATK="gatk --java-options -Xmx8G"
 SCRIPTPATH=$(dirname $(realpath -s $0))
 
 VCF=$1
+REF=$2
 
 echo "Extracting and filtering SNPs and indels from variant call file ${VCF}."
 # https://gatkforums.broadinstitute.org/gatk/discussion/11097/cant-use-vqsr-on-non-model-organism-or-small-dataset
