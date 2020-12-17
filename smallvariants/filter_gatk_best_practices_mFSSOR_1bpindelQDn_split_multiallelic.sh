@@ -1,17 +1,12 @@
 #!/bin/bash
 
-#$ -cwd
-#$ -V
-#$ -j y
-#$ -S /bin/bash
-#$ -q default
-#$ -pe smp 2
-
-source /mnt/software/Modules/current/init/bash
-module load gatk/4.0.6.0
 GATK="gatk --java-options -Xmx8G"
 
-echo "Extracting and filtering SNPs from variant call file ${VCF}."
+SCRIPTPATH=$(dirname $(realpath -s $0))
+
+VCF=$1
+
+echo "Extracting and filtering SNPs and indels from variant call file ${VCF}."
 # https://gatkforums.broadinstitute.org/gatk/discussion/11097/cant-use-vqsr-on-non-model-organism-or-small-dataset
 # omitting MQ, MQRankSum because reads were filtered at MAPQ60
 # omitting InbreedingCoeff because we only have one sample
@@ -50,7 +45,7 @@ $GATK SelectVariants \
     --restrict-alleles-to MULTIALLELIC \
     --output "${MULTIALLELIC}"
 # split multiallelic sites
-python /pbi/dept/appslab/projects/2018/wr_hg002_ccs_paper/scripts/decompose_multiallelic_sites.py \
+python $SCRIPTPATH/decompose_multiallelic_sites.py \
     "${MULTIALLELIC}" -o "${DECOMPOSED}"
 
 # select multiallelic SNPs
